@@ -30,12 +30,15 @@ include_directories(${PROJECT_SOURCE_DIR}
                     )
 
 set(HEADERS
+    LapackTestMainWindow.h
 )
 
 set(FORMS
+    lapack_test_main_window.ui
 )
 
 set(SOURCES
+    LapackTestMainWindow.cpp
     main.cpp
 )
 
@@ -47,7 +50,7 @@ qt5_wrap_ui(UIS_HDRS ${FORMS} )
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UIS_HDRS} ${RESOURCES}  )
 
 target_link_libraries(${PROJECT_NAME} Qt5::Widgets GSL::gsl
-    GSL::gslcblas ${LAPACK_LIBRARIES} )
+    GSL::gslcblas ${LAPACK_LIBRARIES} lapack_test_src)
 
 install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin
