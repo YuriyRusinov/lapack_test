@@ -10,17 +10,7 @@ Makefile
 Makefile.in
 .qmake.stash
 build/
-schema/librandgeneration/autom4te.cache/
-schema/librandgeneration/build-aux/compile
-schema/librandgeneration/build-aux/install-sh
-schema/librandgeneration/build-aux/ltmain.sh
-schema/librandgeneration/build-aux/missing
-schema/librandgeneration/config.status
-schema/librandgeneration/configure
-schema/librandgeneration/include/config.h
-schema/librandgeneration/include/config.h.in
-schema/librandgeneration/include/stamp-h1
-schema/librandgeneration/aclocal.m4
+docs/
 
 # Logs and databases #
 ######################

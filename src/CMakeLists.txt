@@ -30,6 +30,10 @@ include_directories(${PROJECT_SOURCE_DIR}
 set(HEADERS
 )
 
+set(FORMS
+    matrix_widget.ui
+)
+
 set(SOURCES
 )
 
@@ -46,7 +50,8 @@ target_link_libraries(${PROJECT_NAME} Qt5::Widgets GSL::gsl GSL::gslcblas
 
 set(${PROJECT_NAME}_RUNTIME_LIBRARY_DIRS ${CMAKE_INSTALL_LIBDIR} )
 
-target_include_directories(${PROJECT_NAME} PUBLIC $<INSTALL_INTERFACE:include/${PROJECT_NAME}> ${PostgreSQL_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<INSTALL_INTERFACE:include/${PROJECT_NAME}> ${LAPACK_INCLUDE_DIRS})
 
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}
