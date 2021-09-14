@@ -13,6 +13,8 @@ namespace Ui {
 
 class QMdiArea;
 
+class MatrixObject;
+
 class LapackTestMainWindow : public QMainWindow {
 public:
     LapackTestMainWindow( QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
@@ -23,12 +25,15 @@ private slots:
     void slotLSave();
     void slotLQuit();
 
+    void slotSetWidget( QWidget* w );
 private:
     //
     // Variables
     //
     Ui::lapack_test_main_window* _UI;
     QMdiArea* _mdiArea;
+
+    MatrixObject* _matrCalc;
 
 private:
     Q_OBJECT
