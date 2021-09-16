@@ -3,6 +3,8 @@
 #include <QMdiSubWindow>
 #include <QtDebug>
 
+#include <LMatrix.h>
+
 #include "MatrixWidget.h"
 #include "ui_matrix_widget.h"
 
@@ -93,6 +95,19 @@ void MatrixWidget::close() {
 }
 
 void MatrixWidget::init() {
+    QStringList matrActions;
+    matrActions << tr("+")
+                << tr("-")
+                << tr("*")
+                << tr("A^{-1}*B");
+    QList<int> matrIndA;
+    matrIndA << Matrix_ADD
+             << Matrix_SUB
+             << Matrix_MULT
+             << Matrix_SOLVE;
+    for(int i=0; i<matrActions.size(); i++) {
+        m_UI->cbMatrOper->addItem(matrActions[i], matrIndA[i]);
+    }
     m_UI->tvMatrixA->setSelectionMode( QAbstractItemView::SingleSelection );
     m_UI->tvMatrixB->setSelectionMode( QAbstractItemView::SingleSelection );
     m_UI->tvMatrixRes->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -117,4 +132,8 @@ void MatrixWidget::init() {
 
     QObject::connect( m_UI->pbSolve, &QAbstractButton::clicked, this, &MatrixWidget::calcSolution );
     QObject::connect( m_UI->pbClose, &QAbstractButton::clicked, this, &MatrixWidget::close );
+}
+
+void MatrixWidget::viewMatrixRes( LMatrix* C ) {
+    Q_UNUSED( C );
 }

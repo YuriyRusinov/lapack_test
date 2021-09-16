@@ -14,6 +14,16 @@ namespace Ui {
     class matrix_widget;
 }
 
+enum MatrixOper {
+    Matrix_UNDEF = -1,
+    Matrix_ADD = 0,
+    Matrix_SUB = 1,
+    Matrix_MULT = 2,
+    Matrix_SOLVE = 3
+};
+
+class LMatrix;
+
 class MatrixWidget : public QWidget {
 public:
     MatrixWidget( QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
@@ -37,6 +47,11 @@ private slots:
 
     void calcSolution();
     void close();
+
+    void viewMatrixRes( LMatrix* C );
+
+signals:
+    void sendMatrices( LMatrix* A, LMatrix* B, int matrOp );
 
 private:
     //

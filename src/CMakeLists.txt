@@ -30,6 +30,7 @@ include_directories(${PROJECT_SOURCE_DIR}
 set(HEADERS
     ui/MatrixWidget.h
     MatrixObject.h
+    math/LMatrix.h
 )
 
 set(FORMS
@@ -39,6 +40,7 @@ set(FORMS
 set(SOURCES
     ui/MatrixWidget.cpp
     MatrixObject.cpp
+    math/LMatrix.cpp
 )
 
 set(RESOURCES
@@ -47,6 +49,7 @@ set(RESOURCES
 qt5_wrap_ui(UIS_HDRS ${FORMS} )
 
 include_directories( ui )
+include_directories( math )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${UIS_HDRS}
     ${RESOURCES} ${LAPACK_LIBRARIES})
