@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
-    <height>487</height>
+    <width>657</width>
+    <height>603</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,34 +21,34 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QToolButton" name="tbAddRow_A">
+       <widget class="QLabel" name="lMatrixARows">
         <property name="text">
-         <string>...</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of rows:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QToolButton" name="tbRemoveRow_A">
-        <property name="text">
-         <string>...</string>
+       <widget class="QSpinBox" name="spMatrixARows">
+        <property name="minimum">
+         <number>1</number>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QToolButton" name="tbAddColumn_A">
+      <item row="1" column="0">
+       <widget class="QLabel" name="lMatrixAColumns">
         <property name="text">
-         <string>...</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of columns:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QToolButton" name="tbRemoveColumn_A">
-        <property name="text">
-         <string>...</string>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="spMatrixAColumns">
+        <property name="minimum">
+         <number>1</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="4">
+      <item row="2" column="0" colspan="2">
        <widget class="QTableView" name="tvMatrixA"/>
       </item>
      </layout>
@@ -64,34 +64,34 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QToolButton" name="tbAddRow_B">
+       <widget class="QLabel" name="lMatrixBRows">
         <property name="text">
-         <string>...</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of rows:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QToolButton" name="tbRemoveRow_B">
-        <property name="text">
-         <string>...</string>
+       <widget class="QSpinBox" name="spMatrixBRows">
+        <property name="minimum">
+         <number>1</number>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QToolButton" name="tbAddColumn_B">
+      <item row="1" column="0">
+       <widget class="QLabel" name="lMatrixBColumns">
         <property name="text">
-         <string>...</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of columns:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QToolButton" name="tbRemoveColumn_B">
-        <property name="text">
-         <string>...</string>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="spMatrixBColumns">
+        <property name="minimum">
+         <number>1</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="4">
+      <item row="2" column="0" colspan="2">
        <widget class="QTableView" name="tvMatrixB"/>
       </item>
      </layout>
@@ -116,7 +116,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pbSolve">
+      <widget class="QPushButton" name="pbCalc">
        <property name="text">
         <string>Calc</string>
        </property>

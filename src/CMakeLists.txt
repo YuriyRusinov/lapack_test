@@ -29,6 +29,7 @@ include_directories(${PROJECT_SOURCE_DIR}
 
 set(HEADERS
     ui/MatrixWidget.h
+    ui/MatrixModel.h
     MatrixObject.h
     math/LMatrix.h
 )
@@ -39,6 +40,7 @@ set(FORMS
 
 set(SOURCES
     ui/MatrixWidget.cpp
+    ui/MatrixModel.cpp
     MatrixObject.cpp
     math/LMatrix.cpp
 )

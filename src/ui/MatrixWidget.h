@@ -35,6 +35,11 @@ public:
     void setMatrixResultsModel( QAbstractItemModel* matrixResModel );
 
 private slots:
+    void spARowsValueChanged( int val );
+    void spBRowsValueChanged( int val );
+    void spAColumnsValueChanged( int val );
+    void spBColumnsValueChanged( int val );
+
     void matrixA_addRow();
     void matrixB_addRow();
     void matrixA_removeRow();

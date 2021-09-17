@@ -112,28 +112,31 @@ void MatrixWidget::init() {
     m_UI->tvMatrixB->setSelectionMode( QAbstractItemView::SingleSelection );
     m_UI->tvMatrixRes->setSelectionMode( QAbstractItemView::SingleSelection );
 
-    m_UI->tbAddRow_A->setToolTip( tr("Append row to matrix") );
-    m_UI->tbAddRow_B->setToolTip( tr("Append row to matrix") );
-    m_UI->tbAddColumn_A->setToolTip( tr("Append column to matrix") );
-    m_UI->tbAddColumn_B->setToolTip( tr("Append column to matrix") );
-    m_UI->tbRemoveRow_A->setToolTip( tr("Remove row from matrix") );
-    m_UI->tbRemoveRow_B->setToolTip( tr("Remove row from matrix") );
-    m_UI->tbRemoveColumn_A->setToolTip( tr("Remove column from matrix") );
-    m_UI->tbRemoveColumn_B->setToolTip( tr("Remove column from matrix") );
+    QObject::connect( m_UI->spMatrixARows, QOverload<int>::of(&QSpinBox::valueChanged), this, &MatrixWidget::spARowsValueChanged );
+    QObject::connect( m_UI->spMatrixBRows, QOverload<int>::of(&QSpinBox::valueChanged), this, &MatrixWidget::spBRowsValueChanged );
+    QObject::connect( m_UI->spMatrixAColumns, QOverload<int>::of(&QSpinBox::valueChanged), this, &MatrixWidget::spAColumnsValueChanged );
+    QObject::connect( m_UI->spMatrixBColumns, QOverload<int>::of(&QSpinBox::valueChanged), this, &MatrixWidget::spBColumnsValueChanged );
 
-    QObject::connect( m_UI->tbAddRow_A, &QAbstractButton::clicked, this, &MatrixWidget::matrixA_addRow );
-    QObject::connect( m_UI->tbRemoveRow_A, &QAbstractButton::clicked, this, &MatrixWidget::matrixA_removeRow );
-    QObject::connect( m_UI->tbAddColumn_A, &QAbstractButton::clicked, this, &MatrixWidget::matrixA_addColumn );
-    QObject::connect( m_UI->tbRemoveColumn_A, &QAbstractButton::clicked, this, &MatrixWidget::matrixA_removeColumn );
-    QObject::connect( m_UI->tbAddRow_B, &QAbstractButton::clicked, this, &MatrixWidget::matrixB_addRow );
-    QObject::connect( m_UI->tbRemoveRow_B, &QAbstractButton::clicked, this, &MatrixWidget::matrixB_removeRow );
-    QObject::connect( m_UI->tbAddColumn_B, &QAbstractButton::clicked, this, &MatrixWidget::matrixB_addColumn );
-    QObject::connect( m_UI->tbRemoveColumn_B, &QAbstractButton::clicked, this, &MatrixWidget::matrixB_removeColumn );
-
-    QObject::connect( m_UI->pbSolve, &QAbstractButton::clicked, this, &MatrixWidget::calcSolution );
+    QObject::connect( m_UI->pbCalc, &QAbstractButton::clicked, this, &MatrixWidget::calcSolution );
     QObject::connect( m_UI->pbClose, &QAbstractButton::clicked, this, &MatrixWidget::close );
 }
 
 void MatrixWidget::viewMatrixRes( LMatrix* C ) {
     Q_UNUSED( C );
+}
+
+void MatrixWidget::spARowsValueChanged( int val ) {
+    qDebug() << __PRETTY_FUNCTION__ << val;
+}
+
+void MatrixWidget::spBRowsValueChanged( int val ) {
+    qDebug() << __PRETTY_FUNCTION__ << val;
+}
+
+void MatrixWidget::spAColumnsValueChanged( int val ) {
+    qDebug() << __PRETTY_FUNCTION__ << val;
+}
+
+void MatrixWidget::spBColumnsValueChanged( int val ) {
+    qDebug() << __PRETTY_FUNCTION__ << val;
 }
