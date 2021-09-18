@@ -18,6 +18,8 @@ public:
     double& operator() (int i, int j);
     const double& operator() (int i, int j) const;
 
+    double* const getAddr(int i, int j) const;
+
     int rowCount() const;
     int columnCount() const;
 

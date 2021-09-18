@@ -4,7 +4,7 @@
 #include <QtDebug>
 
 #include <LMatrix.h>
-
+#include "MatrixModel.h"
 #include "MatrixWidget.h"
 #include "ui_matrix_widget.h"
 
@@ -111,6 +111,13 @@ void MatrixWidget::init() {
     m_UI->tvMatrixA->setSelectionMode( QAbstractItemView::SingleSelection );
     m_UI->tvMatrixB->setSelectionMode( QAbstractItemView::SingleSelection );
     m_UI->tvMatrixRes->setSelectionMode( QAbstractItemView::SingleSelection );
+
+    int nrA = m_UI->spMatrixARows->value();
+    int ncA = m_UI->spMatrixAColumns->value();
+    LMatrix mA( nrA, ncA );
+    mA(0, 0) = 1.0;
+    QAbstractItemModel* matrAModel = new MatrixModel( mA );
+    m_UI->tvMatrixA->setModel( matrAModel );
 
     QObject::connect( m_UI->spMatrixARows, QOverload<int>::of(&QSpinBox::valueChanged), this, &MatrixWidget::spARowsValueChanged );
     QObject::connect( m_UI->spMatrixBRows, QOverload<int>::of(&QSpinBox::valueChanged), this, &MatrixWidget::spBRowsValueChanged );

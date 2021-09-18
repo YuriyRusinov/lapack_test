@@ -14,13 +14,20 @@ LMatrix::LMatrix(int n, int m, double* values)
     m_nColumns(m),
     m_values( (n * m) > 0 ? new double [m*n] : nullptr ) {
 
-    int nr = sizeof(values)/sizeof(double);
-    int nn = min( n*m, nr );
-    for( int i=0; i<nn; i++ ) {
-        m_values[i] = values[i];
+    if( values != nullptr ) {
+        int nr = sizeof(values)/sizeof(double);
+        int nn = min( n*m, nr );
+        for( int i=0; i<nn; i++ ) {
+            m_values[i] = values[i];
+        }
+        for( int i=nn+1; i<n*m; i++ ) {
+            m_values[i] = 0.0;
+        }
     }
-    for( int i=nn+1; i<n*m; i++ ) {
-        m_values[i] = 0.0;
+    else {
+        for ( int i=0; i<n*m; i++ ) {
+            m_values[i] = 0.0;
+        }
     }
 }
 
@@ -92,6 +99,14 @@ const double& LMatrix::operator() (int i, int j) const {
         throw out_of_range("Invalid matrix indices");
 
     return m_values[i*m_nRows+j];
+}
+
+double* const LMatrix::getAddr(int i, int j) const {
+    if( i < 0 || i > m_nRows-1 || j < 0 || j > m_nColumns-1 )
+        throw out_of_range("Invalid matrix indices");
+
+    int shift = i*m_nRows+j;
+    return m_values+shift;
 }
 
 int LMatrix::rowCount() const {
