@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include "MatrixModel.h"
 
 MatrixModel::MatrixModel (const LMatrix& MatrixData, QObject* parent)
@@ -46,29 +47,28 @@ QVariant MatrixModel::data(const QModelIndex& index, int role) const {
 }
 
 bool MatrixModel::insertRows(int row, int count, const QModelIndex& parent) {
-    Q_UNUSED( row );
-    Q_UNUSED( count );
-    Q_UNUSED( parent );
-    return false;
+    qDebug() << __PRETTY_FUNCTION__ << row << count << parent;
+    if( row > m_MatrixData.rowCount() )
+        return false;
+    beginInsertRows(parent, row, row+count-1);
+    for(int i=0; i<count; i++) {
+        m_MatrixData.insertRow(row+i);
+    }
+    endInsertRows();
+    return true;
 }
 
 bool MatrixModel::insertColumns(int column, int count, const QModelIndex& parent) {
-    Q_UNUSED( column );
-    Q_UNUSED( count );
-    Q_UNUSED( parent );
+    qDebug() << __PRETTY_FUNCTION__ << column << count << parent;
     return false;
 }
 
 bool MatrixModel::removeRows(int row, int count, const QModelIndex& parent) {
-    Q_UNUSED( row );
-    Q_UNUSED( count );
-    Q_UNUSED( parent );
+    qDebug() << __PRETTY_FUNCTION__ << row << count << parent;
     return false;
 }
 
 bool MatrixModel::removeColumns(int column, int count, const QModelIndex& parent) {
-    Q_UNUSED( column );
-    Q_UNUSED( count );
-    Q_UNUSED( parent );
+    qDebug() << __PRETTY_FUNCTION__ << column << count << parent;
     return false;
 }

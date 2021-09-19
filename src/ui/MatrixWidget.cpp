@@ -51,35 +51,75 @@ void MatrixWidget::setMatrixResultsModel( QAbstractItemModel* matrixResModel ) {
 }
 
 void MatrixWidget::matrixA_addRow() {
-    qDebug() << __PRETTY_FUNCTION__;
+    QAbstractItemModel* matrMod = m_UI->tvMatrixA->model();
+    if( !matrMod )
+        return;
+    int nr = matrMod->rowCount();
+    bool isIns = matrMod->insertRows( nr, 1 );
+    qDebug() << __PRETTY_FUNCTION__ << isIns << nr;
 }
 
 void MatrixWidget::matrixB_addRow() {
-    qDebug() << __PRETTY_FUNCTION__;
+    QAbstractItemModel* matrMod = m_UI->tvMatrixB->model();
+    if( !matrMod )
+        return;
+    int nr = matrMod->rowCount();
+    bool isIns = matrMod->insertRows( nr, 1 );
+    qDebug() << __PRETTY_FUNCTION__ << isIns << nr;
 }
 
 void MatrixWidget::matrixA_removeRow() {
-    qDebug() << __PRETTY_FUNCTION__;
+    QAbstractItemModel* matrMod = m_UI->tvMatrixA->model();
+    if( !matrMod )
+        return;
+    int nr = matrMod->rowCount();
+    bool isRemoved = matrMod->removeRows( nr-1, 1 );
+    qDebug() << __PRETTY_FUNCTION__ << isRemoved << nr;
 }
 
 void MatrixWidget::matrixB_removeRow() {
-    qDebug() << __PRETTY_FUNCTION__;
+    QAbstractItemModel* matrMod = m_UI->tvMatrixB->model();
+    if( !matrMod )
+        return;
+    int nr = matrMod->rowCount();
+    bool isRemoved = matrMod->removeRows( nr-1, 1 );
+    qDebug() << __PRETTY_FUNCTION__ << isRemoved << nr;
 }
 
 void MatrixWidget::matrixA_addColumn() {
-    qDebug() << __PRETTY_FUNCTION__;
+    QAbstractItemModel* matrMod = m_UI->tvMatrixA->model();
+    if( !matrMod )
+        return;
+    int nc = matrMod->columnCount();
+    bool isIns = matrMod->insertColumns( nc, 1 );
+    qDebug() << __PRETTY_FUNCTION__ << isIns << nc;
 }
 
 void MatrixWidget::matrixB_addColumn() {
-    qDebug() << __PRETTY_FUNCTION__;
+    QAbstractItemModel* matrMod = m_UI->tvMatrixB->model();
+    if( !matrMod )
+        return;
+    int nc = matrMod->columnCount();
+    bool isIns = matrMod->insertColumns( nc, 1 );
+    qDebug() << __PRETTY_FUNCTION__ << isIns << nc;
 }
 
 void MatrixWidget::matrixA_removeColumn() {
-    qDebug() << __PRETTY_FUNCTION__;
+    QAbstractItemModel* matrMod = m_UI->tvMatrixA->model();
+    if( !matrMod )
+        return;
+    int nc = matrMod->columnCount();
+    bool isRemoved = matrMod->removeColumns( nc-1, 1 );
+    qDebug() << __PRETTY_FUNCTION__ << isRemoved << nc;
 }
 
 void MatrixWidget::matrixB_removeColumn() {
-    qDebug() << __PRETTY_FUNCTION__;
+    QAbstractItemModel* matrMod = m_UI->tvMatrixB->model();
+    if( !matrMod )
+        return;
+    int nc = matrMod->columnCount();
+    bool isRemoved = matrMod->removeColumns( nc-1, 1 );
+    qDebug() << __PRETTY_FUNCTION__ << isRemoved << nc;
 }
 
 void MatrixWidget::calcSolution() {
@@ -112,12 +152,8 @@ void MatrixWidget::init() {
     m_UI->tvMatrixB->setSelectionMode( QAbstractItemView::SingleSelection );
     m_UI->tvMatrixRes->setSelectionMode( QAbstractItemView::SingleSelection );
 
-    int nrA = m_UI->spMatrixARows->value();
-    int ncA = m_UI->spMatrixAColumns->value();
-    LMatrix mA( nrA, ncA );
-    mA(0, 0) = 1.0;
-    QAbstractItemModel* matrAModel = new MatrixModel( mA );
-    m_UI->tvMatrixA->setModel( matrAModel );
+    this->initMatrices( m_UI->tvMatrixA, m_UI->spMatrixARows, m_UI->spMatrixAColumns );
+    this->initMatrices( m_UI->tvMatrixB, m_UI->spMatrixBRows, m_UI->spMatrixBColumns );
 
     QObject::connect( m_UI->spMatrixARows, QOverload<int>::of(&QSpinBox::valueChanged), this, &MatrixWidget::spARowsValueChanged );
     QObject::connect( m_UI->spMatrixBRows, QOverload<int>::of(&QSpinBox::valueChanged), this, &MatrixWidget::spBRowsValueChanged );
@@ -133,17 +169,48 @@ void MatrixWidget::viewMatrixRes( LMatrix* C ) {
 }
 
 void MatrixWidget::spARowsValueChanged( int val ) {
-    qDebug() << __PRETTY_FUNCTION__ << val;
+    int nr = m_UI->tvMatrixA->model()->rowCount();
+    qDebug() << __PRETTY_FUNCTION__ << val << nr;
+    if( val > nr )
+        this->matrixA_addRow();
+    else if( val < nr )
+        this->matrixA_removeRow();
 }
 
 void MatrixWidget::spBRowsValueChanged( int val ) {
-    qDebug() << __PRETTY_FUNCTION__ << val;
+    int nr = m_UI->tvMatrixB->model()->rowCount();
+    qDebug() << __PRETTY_FUNCTION__ << val << nr;
+    if( val > nr )
+        this->matrixB_addRow();
+    else if( val < nr )
+        this->matrixB_removeRow();
 }
 
 void MatrixWidget::spAColumnsValueChanged( int val ) {
-    qDebug() << __PRETTY_FUNCTION__ << val;
+    int nc = m_UI->tvMatrixA->model()->columnCount();
+    qDebug() << __PRETTY_FUNCTION__ << val << nc;
+    if( val > nc )
+        this->matrixA_addColumn();
+    else if( val < nc )
+        this->matrixA_removeColumn();
 }
 
 void MatrixWidget::spBColumnsValueChanged( int val ) {
-    qDebug() << __PRETTY_FUNCTION__ << val;
+    int nc = m_UI->tvMatrixB->model()->columnCount();
+    qDebug() << __PRETTY_FUNCTION__ << val << nc;
+    if( val > nc )
+        this->matrixB_addColumn();
+    else if( val < nc )
+        this->matrixB_removeColumn();
+}
+
+void MatrixWidget::initMatrices( QAbstractItemView* tv, QSpinBox* spRow, QSpinBox* spCol ) {
+    if( !tv || !spRow || !spCol )
+        return;
+    int nr = spRow->value();
+    int nc = spCol->value();
+    LMatrix mA( nr, nc );
+    mA(0, 0) = 0.0;
+    QAbstractItemModel* matrModel = new MatrixModel( mA );
+    tv->setModel( matrModel );
 }

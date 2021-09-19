@@ -19,6 +19,12 @@ public:
     const double& operator() (int i, int j) const;
 
     double* const getAddr(int i, int j) const;
+    const double* getValues() const;
+
+    void insertRow(int nr);
+    void removeRow(int nr);
+    void insertColumn(int nc);
+    void removeColumn(int nc);
 
     int rowCount() const;
     int columnCount() const;
@@ -28,6 +34,7 @@ public:
     LMatrix& operator*= ( const LMatrix& M );
 
     LMatrix& linearSolve( LMatrix& X );
+
 private:
     int m_nRows;
     int m_nColumns;

@@ -1,11 +1,18 @@
 #include <algorithm>
 #include <stdexcept>
+#include <string>
+#include <sstream>
+#include <iostream>
 
 #include <cblas.h>
 #include "LMatrix.h"
 
+using std::cerr;
+using std::endl;
 using std::min;
 using std::max;
+using std::string;
+using std::stringstream;
 using std::range_error;
 using std::out_of_range;
 
@@ -88,22 +95,31 @@ LMatrix::~LMatrix() {
 }
 
 double& LMatrix::operator() (int i, int j) {
-    if( i < 0 || i > m_nRows-1 || j < 0 || j > m_nColumns-1 )
-        throw out_of_range("Invalid matrix indices");
+    if( i < 0 || i > m_nRows-1 || j < 0 || j > m_nColumns-1 ) {
+        stringstream err_str;
+        err_str << __PRETTY_FUNCTION__ << " Invalid matrix indices";
+        throw out_of_range(err_str.str().c_str());
+    }
 
     return m_values[i*m_nRows+j];
 }
 
 const double& LMatrix::operator() (int i, int j) const {
-    if( i < 0 || i > m_nRows-1 || j < 0 || j > m_nColumns-1 )
-        throw out_of_range("Invalid matrix indices");
+    if( i < 0 || i > m_nRows-1 || j < 0 || j > m_nColumns-1 ) {
+        stringstream err_str;
+        err_str << __PRETTY_FUNCTION__ << " Invalid matrix indices";
+        throw out_of_range(err_str.str().c_str());
+    }
 
     return m_values[i*m_nRows+j];
 }
 
 double* const LMatrix::getAddr(int i, int j) const {
-    if( i < 0 || i > m_nRows-1 || j < 0 || j > m_nColumns-1 )
-        throw out_of_range("Invalid matrix indices");
+    if( i < 0 || i > m_nRows-1 || j < 0 || j > m_nColumns-1 ) {
+        stringstream err_str;
+        err_str << __PRETTY_FUNCTION__ << " Invalid matrix indices " << i << " of " << m_nRows << " " << j << " of " << m_nColumns;
+        throw out_of_range(err_str.str().c_str());
+    }
 
     int shift = i*m_nRows+j;
     return m_values+shift;
@@ -157,4 +173,47 @@ LMatrix& LMatrix::operator*= ( const LMatrix& M ) {
 
 LMatrix& LMatrix::linearSolve( LMatrix& X ) {
     return *this;
+}
+
+const double* LMatrix::getValues() const {
+    return m_values;
+}
+
+void LMatrix::insertRow(int nr) {
+    //cerr << __PRETTY_FUNCTION__ << ' ' << nr << ' ' << m_nRows << endl;
+    if( nr > m_nRows )
+        return;
+
+    double* tvals = new double[ (++m_nRows)*m_nColumns ];
+    int ii = 0;
+    for(int i=0; i<nr; i++) {
+        for(int j=0; j<m_nColumns; j++) {
+            tvals[ii] = m_values[ii];
+            ii++;
+        }
+    }
+    for(int j=0; j<m_nColumns; j++) {
+        tvals[nr*m_nRows+j] = 0.0;
+    }
+    for(int i=nr+1; i<m_nRows; i++) {
+        for(int j=0; j<m_nColumns; j++) {
+            tvals[i*m_nRows+j] = m_values[ii];
+            ii++;
+        }
+    }
+    delete [] m_values;
+    m_values = tvals;
+//    m_nRows++;
+}
+
+void LMatrix::removeRow(int nr) {
+
+}
+
+void LMatrix::insertColumn(int nc) {
+
+}
+
+void LMatrix::removeColumn(int nc) {
+
 }

@@ -9,6 +9,8 @@
 
 class QAbstractItemModel;
 class QAbstractItemDelegate;
+class QSpinBox;
+class QAbstractItemView;
 
 namespace Ui {
     class matrix_widget;
@@ -63,6 +65,7 @@ private:
     // Functions
     //
     void init();
+    void initMatrices( QAbstractItemView* tv, QSpinBox* spRow, QSpinBox* spCol );
 
 private:
     //
