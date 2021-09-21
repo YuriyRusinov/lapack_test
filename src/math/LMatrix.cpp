@@ -198,9 +198,31 @@ void LMatrix::removeRow(int nr) {
 }
 
 void LMatrix::insertColumn(int nc) {
+    if( nc > m_nColumns )
+        return;
 
+    m_values.resize( (m_nColumns+1)*m_nRows );
+
+    for (size_t processed = 0; processed < m_nRows; ++processed) {
+        // shift the elements for row n (starting at the end) 
+        // to their new location
+        auto start = m_values.end()-(processed+1) * m_nColumns;
+        auto end = start + m_nColumns;
+        auto middle = end - (m_nRows-processed);
+        std::rotate(start, middle, end);
+
+        // replace one of the default value items to be the new value
+        m_values[m_values.size()- m_nColumns*(1+processed)] = 0.0;//col[col.size()-processed-1];
+    }
+    m_nColumns++;
 }
 
 void LMatrix::removeColumn(int nc) {
+    if( nc > m_nColumns )
+        return;
 
+    for(int i=0; i<m_nRows; i++)
+        m_values.erase(m_values.begin()+i*m_nRows+nc);
+
+    m_nColumns--;
 }

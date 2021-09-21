@@ -5,6 +5,7 @@
 
 #include <LMatrix.h>
 #include "MatrixModel.h"
+#include "MatrixDelegate.h"
 #include "MatrixWidget.h"
 #include "ui_matrix_widget.h"
 
@@ -213,4 +214,6 @@ void MatrixWidget::initMatrices( QAbstractItemView* tv, QSpinBox* spRow, QSpinBo
     mA(0, 0) = 0.0;
     QAbstractItemModel* matrModel = new MatrixModel( mA );
     tv->setModel( matrModel );
+    QAbstractItemDelegate* matrDeleg = new MatrixDelegate;
+    tv->setItemDelegate( matrDeleg );
 }

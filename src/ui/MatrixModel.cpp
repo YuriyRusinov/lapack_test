@@ -46,9 +46,28 @@ QVariant MatrixModel::data(const QModelIndex& index, int role) const {
     return QVariant();
 }
 
+bool MatrixModel::setData( const QModelIndex& index, const QVariant& value, int role ) {
+    if( index.isValid() && (role == Qt::DisplayRole || role == Qt::EditRole ) ) {
+        int i = index.row();
+        int j = index.column();
+        double val = value.toDouble();
+        m_MatrixData(i, j) = val;
+        emit dataChanged(index, index);
+        return true;
+    }
+    return false;
+}
+
+Qt::ItemFlags MatrixModel::flags( const QModelIndex& index ) const {
+    if( !index.isValid() )
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+}
+
 bool MatrixModel::insertRows(int row, int count, const QModelIndex& parent) {
     qDebug() << __PRETTY_FUNCTION__ << row << count << parent;
-    if( row > m_MatrixData.rowCount() )
+    if( parent.isValid() || row > m_MatrixData.rowCount() )
         return false;
     beginInsertRows(parent, row, row+count-1);
     for(int i=0; i<count; i++) {
@@ -60,12 +79,19 @@ bool MatrixModel::insertRows(int row, int count, const QModelIndex& parent) {
 
 bool MatrixModel::insertColumns(int column, int count, const QModelIndex& parent) {
     qDebug() << __PRETTY_FUNCTION__ << column << count << parent;
-    return false;
+    if( parent.isValid() || column > m_MatrixData.columnCount() )
+        return false;
+    beginInsertColumns( parent, column, column+count-1 );
+    for( int i=0; i<count; i++ ) {
+        m_MatrixData.insertColumn( column+i );
+    }
+    endInsertColumns();
+    return true;
 }
 
 bool MatrixModel::removeRows(int row, int count, const QModelIndex& parent) {
     qDebug() << __PRETTY_FUNCTION__ << row << count << parent;
-    if( row > m_MatrixData.rowCount()-count )
+    if( parent.isValid() || row > m_MatrixData.rowCount()-count )
         return false;
     beginRemoveRows( parent, row, row+count-1 );
     for(int i=0; i<count; i++ ) {
@@ -77,5 +103,12 @@ bool MatrixModel::removeRows(int row, int count, const QModelIndex& parent) {
 
 bool MatrixModel::removeColumns(int column, int count, const QModelIndex& parent) {
     qDebug() << __PRETTY_FUNCTION__ << column << count << parent;
-    return false;
+    if( parent.isValid() || column > m_MatrixData.columnCount()-count )
+        return false;
+    beginRemoveColumns( parent, column, column+count-1 );
+    for(int i=0; i<count; i++ ) {
+        m_MatrixData.removeColumn(i);
+    }
+    endRemoveColumns();
+    return true;
 }
