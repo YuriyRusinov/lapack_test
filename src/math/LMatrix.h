@@ -6,6 +6,10 @@
 
 #pragma	once
 
+#include <vector>
+
+using std::vector;
+
 class LMatrix {
 public:
     LMatrix(int n=0, int m=0, double* values=nullptr);
@@ -18,7 +22,7 @@ public:
     double& operator() (int i, int j);
     const double& operator() (int i, int j) const;
 
-    double* const getAddr(int i, int j) const;
+    const double* getAddr(int i, int j) const;
     const double* getValues() const;
 
     void insertRow(int nr);
@@ -39,5 +43,5 @@ private:
     int m_nRows;
     int m_nColumns;
 
-    double* m_values;
+    vector<double> m_values;
 };

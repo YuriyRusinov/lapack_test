@@ -26,7 +26,7 @@ QModelIndex	MatrixModel::index(int row, int column, const QModelIndex& parent) c
     if( parent.isValid() )
         return QModelIndex();
 
-    double* ptr = m_MatrixData.getAddr( row, column );
+    const double* ptr = m_MatrixData.getAddr( row, column );
     return createIndex( row, column, (void*)ptr);
 }
 
@@ -65,7 +65,14 @@ bool MatrixModel::insertColumns(int column, int count, const QModelIndex& parent
 
 bool MatrixModel::removeRows(int row, int count, const QModelIndex& parent) {
     qDebug() << __PRETTY_FUNCTION__ << row << count << parent;
-    return false;
+    if( row > m_MatrixData.rowCount()-count )
+        return false;
+    beginRemoveRows( parent, row, row+count-1 );
+    for(int i=0; i<count; i++ ) {
+        m_MatrixData.removeRow(i);
+    }
+    endRemoveRows();
+    return true;
 }
 
 bool MatrixModel::removeColumns(int column, int count, const QModelIndex& parent) {

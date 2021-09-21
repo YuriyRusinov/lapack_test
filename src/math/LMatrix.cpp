@@ -19,7 +19,7 @@ using std::out_of_range;
 LMatrix::LMatrix(int n, int m, double* values)
     : m_nRows(n),
     m_nColumns(m),
-    m_values( (n * m) > 0 ? new double [m*n] : nullptr ) {
+    m_values( (n * m) > 0 ? vector< double > (m*n) : vector<double>() ) {
 
     if( values != nullptr ) {
         int nr = sizeof(values)/sizeof(double);
@@ -41,7 +41,7 @@ LMatrix::LMatrix(int n, int m, double* values)
 LMatrix::LMatrix( const LMatrix& M )
     : m_nRows ( M.m_nRows ),
     m_nColumns ( M.m_nColumns ),
-    m_values( m_nRows*m_nColumns > 0 ? new double [m_nRows*m_nColumns] : nullptr ) {
+    m_values( m_nRows*m_nColumns > 0 ? vector< double > (m_nRows*m_nColumns) : vector< double >() ) {
     int nn = m_nRows*m_nColumns;
     for(int i=0; i<nn; i++) {
         m_values[i] = M.m_values[i];
@@ -54,23 +54,21 @@ LMatrix::LMatrix( LMatrix&& M )
     m_values( M.m_values ) {
     M.m_nRows = 0;
     M.m_nColumns = 0;
-    M.m_values = nullptr;
+    M.m_values.clear();//= nullptr;
 }
 
 LMatrix& LMatrix::operator=( const LMatrix& M ) {
     if( this != &M ) {
         m_nRows = M.m_nRows;
         m_nColumns = M.m_nColumns;
-        int nr = sizeof(M.m_values)/sizeof(double);
-        if( m_values != nullptr )
-            delete [] m_values;
+        int nr = M.m_values.size();//sizeof(M.m_values)/sizeof(double);
         if( nr ) {
-            m_values = new double[nr];
+            m_values = vector< double >(nr);
             for(int i=0; i<nr; i++)
                 m_values[i] = M.m_values[i];
         }
         else
-            m_values = nullptr;
+            m_values = vector< double >();
     }
     return *this;
 }
@@ -81,17 +79,13 @@ LMatrix& LMatrix::operator=( LMatrix&& M ) {
         M.m_nRows = 0;
         m_nColumns = M.m_nColumns;
         M.m_nColumns = 0;
-        if( m_values )
-            delete [] m_values;
         m_values = M.m_values;
-        M.m_values = nullptr;
+        M.m_values.clear();
     }
     return *this;
 }
 
 LMatrix::~LMatrix() {
-    if( m_values )
-        delete m_values;
 }
 
 double& LMatrix::operator() (int i, int j) {
@@ -114,7 +108,7 @@ const double& LMatrix::operator() (int i, int j) const {
     return m_values[i*m_nRows+j];
 }
 
-double* const LMatrix::getAddr(int i, int j) const {
+const double* LMatrix::getAddr(int i, int j) const {
     if( i < 0 || i > m_nRows-1 || j < 0 || j > m_nColumns-1 ) {
         stringstream err_str;
         err_str << __PRETTY_FUNCTION__ << " Invalid matrix indices " << i << " of " << m_nRows << " " << j << " of " << m_nColumns;
@@ -122,7 +116,7 @@ double* const LMatrix::getAddr(int i, int j) const {
     }
 
     int shift = i*m_nRows+j;
-    return m_values+shift;
+    return m_values.data()+shift;
 }
 
 int LMatrix::rowCount() const {
@@ -141,7 +135,7 @@ LMatrix& LMatrix::operator+= ( const LMatrix& M ) {
 /*    for(int i=0; i<nn; i++)
         m_values[i] += M.m_values[i];
 */
-    cblas_daxpy( nn, 1.0, M.m_values, 1, m_values, 1 );
+    cblas_daxpy( nn, 1.0, M.m_values.data(), 1, m_values.data(), 1 );
     return *this;
 }
 
@@ -153,7 +147,7 @@ LMatrix& LMatrix::operator-= ( const LMatrix& M ) {
 /*    for(int i=0; i<nn; i++)
         m_values[i] -= M.m_values[i];
 */
-    cblas_daxpy( nn, -1.0, M.m_values, 1, m_values, 1 );
+    cblas_daxpy( nn, -1.0, M.m_values.data(), 1, m_values.data(), 1 );
 
     return *this;
 }
@@ -164,10 +158,12 @@ LMatrix& LMatrix::operator*= ( const LMatrix& M ) {
     double* tvals = new double[ m_nRows * M.m_nColumns ];
     double alpha = 1.0;
     double beta = 0.0;
-    cblas_dgemm( CblasRowMajor, CblasNoTrans, CblasNoTrans, m_nRows, M.m_nColumns, m_nColumns, alpha, m_values, m_nColumns, M.m_values, M.m_nColumns, beta, tvals, m_nRows );
+    cblas_dgemm( CblasRowMajor, CblasNoTrans, CblasNoTrans, m_nRows, M.m_nColumns, m_nColumns, alpha, m_values.data(), m_nColumns, M.m_values.data(), M.m_nColumns, beta, tvals, m_nRows );
     m_nColumns = M.m_nColumns;
-    delete [] m_values;
-    m_values = tvals;
+    m_values.clear();
+    for(int i=0; i<m_nRows * M.m_nColumns; i++)
+        m_values[i] = tvals[i];
+    delete [] tvals;
     return *this;
 }
 
@@ -176,38 +172,29 @@ LMatrix& LMatrix::linearSolve( LMatrix& X ) {
 }
 
 const double* LMatrix::getValues() const {
-    return m_values;
+    return m_values.data();
 }
 
 void LMatrix::insertRow(int nr) {
-    //cerr << __PRETTY_FUNCTION__ << ' ' << nr << ' ' << m_nRows << endl;
     if( nr > m_nRows )
         return;
-
-    double* tvals = new double[ (++m_nRows)*m_nColumns ];
-    int ii = 0;
-    for(int i=0; i<nr; i++) {
-        for(int j=0; j<m_nColumns; j++) {
-            tvals[ii] = m_values[ii];
-            ii++;
-        }
-    }
-    for(int j=0; j<m_nColumns; j++) {
-        tvals[nr*m_nRows+j] = 0.0;
-    }
-    for(int i=nr+1; i<m_nRows; i++) {
-        for(int j=0; j<m_nColumns; j++) {
-            tvals[i*m_nRows+j] = m_values[ii];
-            ii++;
-        }
-    }
-    delete [] m_values;
-    m_values = tvals;
-//    m_nRows++;
+    if( nr == m_nRows )
+        for(int j=0; j<m_nColumns; j++)
+            m_values.push_back(0.0);
+    else
+        m_values.insert( m_values.begin()+nr, m_nColumns, 0.0);
+    m_nRows++;
 }
 
 void LMatrix::removeRow(int nr) {
-
+    if( nr > m_nRows-1 )
+        return;
+    if( nr == m_nRows-1 )
+        for(int j=0; j<m_nColumns; j++)
+            m_values.pop_back();
+    else
+        m_values.erase( m_values.begin()+nr, m_values.begin()+nr+m_nColumns );
+    m_nRows--;
 }
 
 void LMatrix::insertColumn(int nc) {
