@@ -124,7 +124,11 @@ void MatrixWidget::matrixB_removeColumn() {
 }
 
 void MatrixWidget::calcSolution() {
-    qDebug() << __PRETTY_FUNCTION__;
+    LMatrix* matrA = getMatrix( m_UI->spMatrixARows, m_UI->spMatrixAColumns, m_UI->tvMatrixA->model() );
+    LMatrix* matrB = getMatrix( m_UI->spMatrixBRows, m_UI->spMatrixBColumns, m_UI->tvMatrixB->model() );
+    MatrixOper op = (MatrixOper)m_UI->cbMatrOper->currentData().toInt();//value< MatrixOper >();
+//    qDebug() << __PRETTY_FUNCTION__ << op;
+    emit sendMatrices( matrA, matrB, op );
 
 }
 
@@ -216,4 +220,19 @@ void MatrixWidget::initMatrices( QAbstractItemView* tv, QSpinBox* spRow, QSpinBo
     tv->setModel( matrModel );
     QAbstractItemDelegate* matrDeleg = new MatrixDelegate;
     tv->setItemDelegate( matrDeleg );
+}
+
+LMatrix* MatrixWidget::getMatrix( QSpinBox* spRow, QSpinBox* spCol, QAbstractItemModel* matrMod ) {
+    if( spRow == nullptr || spCol == nullptr || matrMod == nullptr )
+        return nullptr;
+    int nrA = spRow->value();
+    int ncA = spCol->value();
+    LMatrix* matrRes = new LMatrix( nrA, ncA, nullptr );
+    for( int i=0; i<nrA; i++ )
+        for( int j=0; j<ncA; j++ ) {
+            QModelIndex wIndex = matrMod->index(i, j);
+            (*matrRes)(i, j) = matrMod->data(wIndex, Qt::DisplayRole).toDouble();
+        }
+    //std::cout << __PRETTY_FUNCTION__ << *matrRes << Qt::endl;
+    return matrRes;
 }

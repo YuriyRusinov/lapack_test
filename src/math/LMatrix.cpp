@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-
+#include <iomanip>
 #include <cblas.h>
 #include "LMatrix.h"
 
@@ -15,6 +15,8 @@ using std::string;
 using std::stringstream;
 using std::range_error;
 using std::out_of_range;
+using std::setprecision;
+using std::setw;
 
 LMatrix::LMatrix(int n, int m, double* values)
     : m_nRows(n),
@@ -175,6 +177,10 @@ const double* LMatrix::getValues() const {
     return m_values.data();
 }
 
+const vector< double >& LMatrix::getMatrValues() const {
+    return m_values;
+}
+
 void LMatrix::insertRow(int nr) {
     if( nr > m_nRows )
         return;
@@ -225,4 +231,14 @@ void LMatrix::removeColumn(int nc) {
         m_values.erase(m_values.begin()+i*m_nRows+nc);
 
     m_nColumns--;
+}
+
+ostream& operator<< (ostream& f, const LMatrix& M ) {
+    for(int i=0; i<M.rowCount(); i++) {
+        stringstream mrowStr;
+        for(int j=0; j<M.columnCount(); j++)
+            mrowStr << setw(5) << setprecision(3) << M(i, j) << (j< M.columnCount()-1 ? " " : "" );
+        f << mrowStr.str() << endl;
+    }
+    return f;
 }

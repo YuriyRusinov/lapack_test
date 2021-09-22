@@ -6,6 +6,8 @@
 
 #include <QObject>
 
+class LMatrix;
+
 class MatrixObject : public QObject {
 public:
     MatrixObject( QObject* parent = nullptr );
@@ -14,7 +16,7 @@ public:
     QWidget* GUIMatrixInit( QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
 private slots:
-    void calcSolution();
+    void calcSolution( LMatrix* matrA, LMatrix* matrB, int matrOp );
 
 signals:
     void sendWidget( QWidget* w );

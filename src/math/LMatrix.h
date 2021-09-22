@@ -6,9 +6,13 @@
 
 #pragma	once
 
+#include <QMetaType>
+
 #include <vector>
+#include <iostream>
 
 using std::vector;
+using std::ostream;
 
 class LMatrix {
 public:
@@ -24,6 +28,7 @@ public:
 
     const double* getAddr(int i, int j) const;
     const double* getValues() const;
+    const vector< double >& getMatrValues() const;
 
     void insertRow(int nr);
     void removeRow(int nr);
@@ -39,9 +44,14 @@ public:
 
     LMatrix& linearSolve( LMatrix& X );
 
+    friend ostream& operator<< (ostream& f, const LMatrix& M );
+
 private:
     int m_nRows;
     int m_nColumns;
 
     vector<double> m_values;
 };
+
+Q_DECLARE_METATYPE( LMatrix );
+Q_DECLARE_METATYPE( LMatrix* );
