@@ -39,7 +39,8 @@ void MatrixObject::calcSolution(LMatrix* matrA, LMatrix* matrB, int matrOp) {
                                           break;
         }
         case MatrixOper::Matrix_SOLVE: {
-                                           matrC = matrA->linearSolve( *matrB );
+                                           matrC = *matrB;
+                                           matrA->linearSolve( matrC );
                                            break;
         }
     }

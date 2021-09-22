@@ -4,7 +4,10 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+
 #include <cblas.h>
+#include <lapack.h>
+#include <lapacke.h>
 #include "LMatrix.h"
 
 using std::cerr;
@@ -164,13 +167,19 @@ LMatrix& LMatrix::operator*= ( const LMatrix& M ) {
     m_nColumns = M.m_nColumns;
     m_values.clear();
     for(int i=0; i<m_nRows * M.m_nColumns; i++)
-        m_values[i] = tvals[i];
+        m_values.push_back( tvals[i] );
     delete [] tvals;
     return *this;
 }
 
 LMatrix& LMatrix::linearSolve( LMatrix& X ) {
-    return *this;
+    if( m_nRows != m_nColumns || m_nRows != X.m_nRows )
+        throw range_error("Invalid matrix sizes");
+    int* ipiv = new int[ m_nRows ];
+    int info;
+    LAPACK_dgesv( &m_nRows, &X.m_nColumns, m_values.data(), &m_nRows, ipiv, X.m_values.data(), &m_nRows, &info );
+    delete [] ipiv;
+    return X;
 }
 
 const double* LMatrix::getValues() const {
