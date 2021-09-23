@@ -20,6 +20,7 @@ private slots:
 
 signals:
     void sendWidget( QWidget* w );
+    void sendMatrResult( LMatrix* matrRes );
 
 private:
     Q_OBJECT

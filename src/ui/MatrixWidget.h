@@ -68,6 +68,7 @@ private:
     void initMatrices( QAbstractItemView* tv, QSpinBox* spRow, QSpinBox* spCol );
     LMatrix* getMatrix( QSpinBox* spRow, QSpinBox* spCol, QAbstractItemModel* matrMod );
 
+    friend class MatrixObject;
 private:
     //
     // Variables

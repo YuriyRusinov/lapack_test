@@ -11,6 +11,7 @@ MatrixObject::~MatrixObject() {
 QWidget* MatrixObject::GUIMatrixInit( QWidget* parent, Qt::WindowFlags flags ) {
     MatrixWidget *matrW = new MatrixWidget( parent, flags );
     QObject::connect( matrW, &MatrixWidget::sendMatrices, this, &MatrixObject::calcSolution );
+    QObject::connect( this, &MatrixObject::sendMatrResult, matrW, &MatrixWidget::viewMatrixRes );
     emit sendWidget( matrW );
     return matrW;
 }
@@ -20,30 +21,33 @@ void MatrixObject::calcSolution(LMatrix* matrA, LMatrix* matrB, int matrOp) {
         return;
 
     MatrixOper op = (MatrixOper)matrOp;
-    LMatrix matrC;
+    LMatrix* matrC = nullptr;
     switch( op ) {
         case MatrixOper::Matrix_UNDEF: default: return; break;
         case MatrixOper::Matrix_ADD: {
-                                         matrC = *matrA;
-                                         matrC += *matrB;
+                                         matrC = new LMatrix(*matrA);
+                                         *matrC += *matrB;
                                          break;
         }
         case MatrixOper::Matrix_SUB: {
-                                         matrC = *matrA;
-                                         matrC -= *matrB;
+                                         matrC = new LMatrix(*matrA);
+                                         *matrC -= *matrB;
                                          break;
         }
         case MatrixOper::Matrix_MULT: {
-                                          matrC = *matrA;
-                                          matrC *= *matrB;
+                                          matrC = new LMatrix(*matrA);
+                                          *matrC *= *matrB;
                                           break;
         }
         case MatrixOper::Matrix_SOLVE: {
-                                           matrC = *matrB;
-                                           matrA->linearSolve( matrC );
+                                           matrC = new LMatrix(*matrB);
+                                           LMatrix *matrAW = new LMatrix(*matrA);
+                                           matrAW->linearSolve( *matrC );
+                                           delete matrAW;
                                            break;
         }
     }
-    std::cout << matrC << std::endl;
+//    std::cout << *matrC << std::endl;
+    emit sendMatrResult( matrC );
 
 }

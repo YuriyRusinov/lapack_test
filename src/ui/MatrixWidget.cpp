@@ -1,5 +1,6 @@
 #include <QAbstractItemModel>
 #include <QAbstractItemDelegate>
+#include <QHeaderView>
 #include <QMdiSubWindow>
 #include <QtDebug>
 
@@ -156,6 +157,12 @@ void MatrixWidget::init() {
     m_UI->tvMatrixA->setSelectionMode( QAbstractItemView::SingleSelection );
     m_UI->tvMatrixB->setSelectionMode( QAbstractItemView::SingleSelection );
     m_UI->tvMatrixRes->setSelectionMode( QAbstractItemView::SingleSelection );
+    QHeaderView* hv = m_UI->tvMatrixA->horizontalHeader();
+    hv->setStretchLastSection( true );
+    hv = m_UI->tvMatrixB->horizontalHeader();
+    hv->setStretchLastSection( true );
+    hv = m_UI->tvMatrixRes->horizontalHeader();
+    hv->setStretchLastSection( true );
 
     this->initMatrices( m_UI->tvMatrixA, m_UI->spMatrixARows, m_UI->spMatrixAColumns );
     this->initMatrices( m_UI->tvMatrixB, m_UI->spMatrixBRows, m_UI->spMatrixBColumns );
@@ -170,7 +177,12 @@ void MatrixWidget::init() {
 }
 
 void MatrixWidget::viewMatrixRes( LMatrix* C ) {
-    Q_UNUSED( C );
+    qDebug() << __PRETTY_FUNCTION__;
+    QAbstractItemModel* oldModel = m_UI->tvMatrixRes->model();
+    QAbstractItemModel* resMod = new MatrixModel( *C );
+    m_UI->tvMatrixRes->setModel( resMod );
+    if( oldModel )
+        delete oldModel;
 }
 
 void MatrixWidget::spARowsValueChanged( int val ) {
